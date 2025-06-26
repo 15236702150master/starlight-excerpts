@@ -1,0 +1,161 @@
+.sidebar {
+  width: 280px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0c0c1e 0%, #1a1a3e 50%, #2d1b69 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+}
+
+.sidebar-header {
+  margin-bottom: 3rem;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.logo-icon {
+  width: 2rem;
+  height: 2rem;
+  color: #4ecdc4;
+}
+
+.app-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.app-tagline {
+  color: #b8b8d4;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+  color: #b8b8d4;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.05);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 12px;
+}
+
+.nav-item:hover::before {
+  opacity: 1;
+}
+
+.nav-item.active {
+  background: rgba(78, 205, 196, 0.1);
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  color: white;
+}
+
+.nav-item.active .nav-icon {
+  color: #4ecdc4;
+}
+
+.nav-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+}
+
+.nav-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.nav-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: inherit;
+}
+
+.nav-description {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  color: inherit;
+}
+
+.nav-item:hover .nav-description {
+  opacity: 1;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    position: relative;
+    padding: 1rem;
+  }
+  
+  .sidebar-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .nav-item {
+    min-width: 120px;
+    padding: 0.75rem;
+  }
+  
+  .nav-content {
+    gap: 0.125rem;
+  }
+  
+  .nav-label {
+    font-size: 0.9rem;
+  }
+  
+  .nav-description {
+    font-size: 0.7rem;
+  }
+}

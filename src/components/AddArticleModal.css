@@ -1,0 +1,266 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #b8b8d4;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.mode-selection {
+  text-align: center;
+}
+
+.mode-selection h2 {
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.mode-selection p {
+  color: #b8b8d4;
+  margin-bottom: 2rem;
+}
+
+.mode-options {
+  display: grid;
+  gap: 1rem;
+}
+
+.mode-option {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.mode-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(78, 205, 196, 0.3);
+  transform: translateY(-2px);
+}
+
+.mode-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #4ecdc4;
+  margin-bottom: 1rem;
+}
+
+.mode-option h3 {
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.mode-option p {
+  color: #b8b8d4;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.text-form {
+  color: white;
+}
+
+.text-form h2 {
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #b8b8d4;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.75rem;
+  color: white;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #4ecdc4;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 200px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  line-height: 1.6;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.secondary-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: #b8b8d4;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.secondary-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.primary-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(78, 205, 196, 0.3);
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.file-upload {
+  text-align: center;
+  color: white;
+}
+
+.file-upload h2 {
+  margin-bottom: 2rem;
+}
+
+.upload-area {
+  border: 2px dashed rgba(78, 205, 196, 0.3);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.upload-area:hover {
+  border-color: rgba(78, 205, 196, 0.5);
+  background: rgba(78, 205, 196, 0.05);
+}
+
+.upload-icon {
+  width: 3rem;
+  height: 3rem;
+  color: #4ecdc4;
+  margin-bottom: 1rem;
+}
+
+.upload-area h3 {
+  margin-bottom: 0.5rem;
+}
+
+.upload-area p {
+  color: #b8b8d4;
+  margin: 0.5rem 0;
+}
+
+.file-size-hint {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: white;
+}
+
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid rgba(78, 205, 196, 0.3);
+  border-top: 3px solid #4ecdc4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 1rem;
+  }
+  
+  .modal-content {
+    padding: 1.5rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .upload-area {
+    padding: 2rem 1rem;
+  }
+}

@@ -1,0 +1,325 @@
+.optimized-starfield {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+  overflow: hidden;
+}
+
+.starfield-canvas {
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  display: block;
+}
+
+.starfield-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: white;
+  z-index: 10;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #60a5fa;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.starfield-info {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  gap: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.starfield-info span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 星星详情模态框样式增强 */
+.star-detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.star-detail-content {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e1b4b 50%, #312e81 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  color: white;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.star-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.star-detail-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: #fbbf24;
+}
+
+.star-detail-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.star-detail-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.star-content {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+.star-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.star-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.star-tags {
+  margin-bottom: 1.5rem;
+}
+
+.star-tags h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #60a5fa;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  background: rgba(96, 165, 250, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  color: #93c5fd;
+}
+
+.star-thoughts {
+  margin-bottom: 1.5rem;
+}
+
+.star-thoughts h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: #34d399;
+}
+
+.thought-item {
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.thought-date {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.5rem;
+}
+
+.thought-text {
+  line-height: 1.5;
+}
+
+.star-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.action-button {
+  background: rgba(96, 165, 250, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  border-radius: 8px;
+  color: #60a5fa;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.action-button:hover {
+  background: rgba(96, 165, 250, 0.3);
+  border-color: rgba(96, 165, 250, 0.6);
+  transform: translateY(-2px);
+}
+
+.action-button.primary {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #22c55e;
+}
+
+.action-button.primary:hover {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: rgba(34, 197, 94, 0.6);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .star-detail-content {
+    margin: 1rem;
+    padding: 1.5rem;
+    max-width: none;
+    max-height: 90vh;
+  }
+  
+  .star-detail-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .star-actions {
+    flex-direction: column;
+  }
+  
+  .action-button {
+    justify-content: center;
+  }
+  
+  .starfield-info {
+    bottom: 10px;
+    left: 10px;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+/* 性能优化相关样式 */
+.starfield-canvas {
+  /* 启用硬件加速 */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* 加载状态动画 */
+.starfield-loading p {
+  animation: fadeInOut 2s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* 星空背景增强 */
+.optimized-starfield::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(34, 197, 94, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.starfield-canvas {
+  position: relative;
+  z-index: 2;
+}
+
+/* 工具提示样式 */
+.star-tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 100;
+  max-width: 200px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.star-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+}

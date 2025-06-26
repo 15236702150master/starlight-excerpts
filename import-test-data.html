@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>导入测试数据</title>
+</head>
+<body>
+    <h1>导入测试数据到 localStorage</h1>
+    <button onclick="importData()">导入数据</button>
+    <button onclick="checkData()">检查数据</button>
+    <button onclick="clearData()">清空数据</button>
+    <div id="output"></div>
+
+    <script>
+        const testData = {
+            "articles": {
+                "test-article-1": {
+                    "id": "test-article-1",
+                    "title": "记忆承载的智慧",
+                    "content": "# 记忆承载的智慧\n\n记忆是人类最珍贵的财富之一。它不仅仅是过去经历的简单存储，更是我们理解世界、构建身份认同的基础。\n\n## 记忆的本质\n\n记忆并非完美的录像带，而是一个动态的重构过程。每当我们回忆起某个事件时，大脑都会根据当前的情境和情感状态对记忆进行微调。这种特性使得记忆既脆弱又强大。\n\n## 集体记忆的力量\n\n个人记忆之外，还存在着集体记忆——那些被社会群体共同保存和传承的经历与智慧。这些记忆塑造了我们的文化认同，连接着过去、现在和未来。\n\n## 遗忘的价值\n\n有趣的是，遗忘并非记忆的对立面，而是记忆系统的重要组成部分。适度的遗忘帮助我们筛选重要信息，避免被琐碎细节淹没。\n\n## 数字时代的记忆\n\n在数字化时代，我们的记忆方式正在发生深刻变化。外部存储设备延伸了我们的记忆容量，但也带来了新的挑战：如何在信息爆炸中保持深度思考的能力？\n\n记忆不仅是过去的见证，更是未来的指南。珍惜每一个值得记住的瞬间，让智慧在时间的长河中闪闪发光。",
+                    "createdAt": "2025-06-26T04:07:15.369Z",
+                    "tags": ["哲学", "记忆", "智慧"],
+                    "type": "markdown"
+                }
+            },
+            "stars": {},
+            "tags": ["哲学", "记忆", "智慧"],
+            "memoryCapsules": {}
+        };
+
+        function importData() {
+            try {
+                // 使用正确的存储键
+                const STORAGE_KEY = 'starlight-excerpts-data';
+                const VERSION_KEY = 'starlight-excerpts-version';
+
+                // 添加版本信息
+                const dataWithVersion = {
+                    ...testData,
+                    version: '1.0.0',
+                    selectedTags: [],
+                    dailyLight: {},
+                    lastDailyLightDate: '',
+                    aiSummaries: {}
+                };
+
+                // 保存到正确的键
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataWithVersion));
+                localStorage.setItem(VERSION_KEY, '1.0.0');
+
+                document.getElementById('output').innerHTML = '<p style="color: green;">数据导入成功！使用键: ' + STORAGE_KEY + '</p>';
+                console.log('测试数据已导入到localStorage，键:', STORAGE_KEY);
+                console.log('数据内容:', dataWithVersion);
+            } catch (error) {
+                document.getElementById('output').innerHTML = '<p style="color: red;">导入失败: ' + error.message + '</p>';
+                console.error('导入失败:', error);
+            }
+        }
+
+        function checkData() {
+            const output = document.getElementById('output');
+            let html = '<h3>localStorage 内容:</h3>';
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                html += `<p><strong>${key}:</strong> ${value.substring(0, 100)}...</p>`;
+            }
+            
+            output.innerHTML = html;
+        }
+
+        function clearData() {
+            localStorage.clear();
+            document.getElementById('output').innerHTML = '<p style="color: orange;">localStorage 已清空</p>';
+        }
+    </script>
+</body>
+</html>
