@@ -1,6 +1,26 @@
 # 星光摘录馆 ✨
 
+[![Deploy to GitHub Pages](https://github.com/15236702150master/starlight-excerpts/actions/workflows/deploy.yml/badge.svg)](https://github.com/15236702150master/starlight-excerpts/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 一个用于收集、整理和创造性使用文本摘录的网页应用。将用户收集的文字片段可视化为"星星"，形成一个个人知识和灵感的"星空"。
+
+## 🌟 在线演示
+
+**[立即体验 → https://15236702150master.github.io/starlight-excerpts/](https://15236702150master.github.io/starlight-excerpts/)**
+
+> 💡 **提示**: 首次访问建议先查看"今日一光"，然后前往"文库"添加您的第一篇文章开始体验！
+
+## ✨ 项目特色
+
+- 🎨 **诗意可视化**: 将文字摘录转化为美丽的星空，每颗星星都承载着知识和灵感
+- 🎵 **沉浸体验**: 内置空灵音效，悬停和点击星星时播放动人音乐
+- 🎙️ **语音备注**: 为每个摘录录制语音，保存当时的想法和感悟
+- 🏷️ **智能标签**: 自动颜色编码的标签系统，让内容组织更加直观
+- 📱 **响应式设计**: 完美适配桌面和移动设备，随时随地记录灵感
+- 🔍 **高级搜索**: 支持全文搜索、标签筛选和时间范围查询
+- 📦 **记忆胶囊**: 将特定主题的星星封存，设定未来开启日期
+- 🤖 **AI 智能摘要**: 集成多个AI平台，自动生成文档摘要和分析
 
 ## 🌟 核心功能
 
@@ -117,6 +137,42 @@ npm run dev
 npm run build
 ```
 
+### 预览构建结果
+```bash
+npm run preview
+```
+
+## 🚀 部署指南
+
+### GitHub Pages 部署
+本项目已配置自动部署到GitHub Pages：
+
+1. Fork 本仓库到您的GitHub账户
+2. 在仓库设置中启用 Pages 功能
+3. 选择 "GitHub Actions" 作为构建源
+4. 推送代码到 `master` 分支即可自动部署
+
+### 本地部署
+```bash
+# 克隆仓库
+git clone https://github.com/15236702150master/starlight-excerpts.git
+cd starlight-excerpts
+
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+```
+
+### 其他平台部署
+- **Vercel**: 导入GitHub仓库，自动检测Vite配置
+- **Netlify**: 拖拽 `dist` 文件夹或连接GitHub仓库
+- **自托管**: 将 `dist` 文件夹内容上传到Web服务器
+
 ## 🎨 设计理念
 
 星光摘录馆的设计灵感来源于夜空中的星辰。每一段被摘录的文字都像是一颗星星，承载着知识和灵感。通过可视化的方式，让用户的思想形成一个美丽的星空，既实用又富有诗意。
@@ -133,19 +189,87 @@ npm run build
 - **渐进式披露**：复杂功能通过模态框逐步展示
 - **响应式布局**：适配各种屏幕尺寸
 
+## 🔧 技术架构
+
+### 前端技术栈
+- **React 19**: 最新的React版本，提供更好的性能和开发体验
+- **Vite**: 快速的构建工具，支持热重载和优化打包
+- **Framer Motion**: 流畅的动画效果，创造丝滑的交互体验
+- **React Router**: 单页应用路由管理
+- **Lucide React**: 精美的图标库
+
+### 文档处理
+- **Mammoth.js**: Word文档(.docx)解析和转换
+- **PDF.js**: PDF文档解析和文本提取
+- **Marked.js**: Markdown渲染和解析
+- **DOMPurify**: HTML内容安全过滤
+
+### 数据存储
+- **localStorage**: 本地数据持久化存储
+- **IndexedDB**: 大文件和音频数据存储
+- **Context API**: 全局状态管理
+
+### 音频处理
+- **Web Audio API**: 原生音效生成和播放
+- **MediaRecorder API**: 语音录制功能
+
+## 🤝 贡献指南
+
+欢迎所有形式的贡献！无论是bug报告、功能建议还是代码提交。
+
+### 如何贡献
+1. Fork 本仓库
+2. 创建您的特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交您的更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启一个 Pull Request
+
+### 开发规范
+- 遵循现有的代码风格
+- 添加适当的注释和文档
+- 确保所有测试通过
+- 提交信息使用清晰的描述
+
 ## 🔮 未来规划
 
-- [ ] 云端同步功能
+- [ ] 云端同步功能 (Firebase/Supabase集成)
 - [ ] AI智能推荐相关内容
 - [ ] 导出为各种格式（PDF、EPUB等）
 - [ ] 社交分享功能
-- [ ] 主题定制
-- [ ] 插件系统
+- [ ] 主题定制系统
+- [ ] 插件系统和API
+- [ ] 多语言支持
+- [ ] 团队协作功能
+- [ ] 移动端原生应用
+
+## 📊 项目统计
+
+- **代码行数**: 20,000+ 行
+- **组件数量**: 25+ 个React组件
+- **支持格式**: TXT, DOCX, PDF, Markdown
+- **音效数量**: 3种原生生成音效
+- **AI平台**: 支持DeepSeek、Qianwen、Doubao等
+
+## 🙏 致谢
+
+感谢所有开源项目的贡献者，特别是：
+- React团队提供的优秀框架
+- Vite团队的快速构建工具
+- Framer Motion的精美动画库
+- 所有依赖库的维护者们
 
 ## 📄 许可证
 
-MIT License
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
+
+## 📞 联系方式
+
+- **GitHub**: [@15236702150master](https://github.com/15236702150master)
+- **项目地址**: [https://github.com/15236702150master/starlight-excerpts](https://github.com/15236702150master/starlight-excerpts)
+- **在线演示**: [https://15236702150master.github.io/starlight-excerpts/](https://15236702150master.github.io/starlight-excerpts/)
 
 ---
 
-让每一段文字都成为夜空中最亮的星 ⭐
+⭐ **让每一段文字都成为夜空中最亮的星** ⭐
+
+如果这个项目对您有帮助，请给它一个星标！
