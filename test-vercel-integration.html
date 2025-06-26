@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starlight Excerpts - Vercel集成测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .info {
+            background-color: #e2e3e5;
+            border: 1px solid #d6d8db;
+            color: #383d41;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-ready { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+        .status-loading { background-color: #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 Starlight Excerpts - Vercel集成测试</h1>
+        
+        <div class="info">
+            <h3>📋 测试说明</h3>
+            <p>此页面用于测试starlight-excerpts项目与Vercel Functions的集成。</p>
+            <p><strong>当前API地址:</strong> <span id="apiUrl">加载中...</span></p>
+            <p><strong>API状态:</strong> <span class="status-indicator status-loading"></span><span id="apiStatus">检查中...</span></p>
+        </div>
+        
+        <div class="form-group">
+            <button onclick="testHealthCheck()" id="healthBtn">🔍 测试健康检查</button>
+            <button onclick="testCORS()" id="corsBtn">🌐 测试CORS配置</button>
+        </div>
+        
+        <hr style="margin: 30px 0;">
+        
+        <h2>🤖 AI功能测试</h2>
+        
+        <form id="aiTestForm">
+            <div class="form-group">
+                <label for="provider">AI 提供商:</label>
+                <select id="provider" required>
+                    <option value="deepseek">DeepSeek</option>
+                    <option value="qianwen">Qianwen (千问)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="apiKey">API 密钥:</label>
+                <input type="password" id="apiKey" placeholder="输入您的API密钥" required>
+                <small style="color: #666;">您的API密钥仅用于测试，不会被存储</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="testContent">测试内容:</label>
+                <textarea id="testContent" placeholder="输入要分析的文本内容..." required>人工智能技术正在快速发展，深度学习、机器学习等技术在各个领域都有广泛应用。从自然语言处理到计算机视觉，AI正在改变我们的生活方式。随着技术的不断进步，AI将在医疗、教育、交通等领域发挥更大的作用。</textarea>
+            </div>
+            
+            <button type="submit" id="aiTestBtn">🚀 测试AI分析</button>
+        </form>
+        
+        <div id="result"></div>
+    </div>
+
+    <script type="module">
+        // 导入配置
+        const API_BASE_URL = 'https://starlight-excerpts-3grmyghz9-masters-projects-42c8b429.vercel.app';
+        
+        // 显示API地址
+        document.getElementById('apiUrl').textContent = API_BASE_URL;
+        
+        // 页面加载时自动检查健康状态
+        window.addEventListener('load', () => {
+            testHealthCheck();
+        });
+        
+        // 测试健康检查
+        window.testHealthCheck = async function() {
+            const statusElement = document.getElementById('apiStatus');
+            const statusIndicator = document.querySelector('.status-indicator');
+            const healthBtn = document.getElementById('healthBtn');
+            
+            healthBtn.disabled = true;
+            healthBtn.textContent = '⏳ 检查中...';
+            statusElement.textContent = '检查中...';
+            statusIndicator.className = 'status-indicator status-loading';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusElement.textContent = `正常 (${data.status})`;
+                    statusIndicator.className = 'status-indicator status-ready';
+                    showResult('success', `✅ 健康检查通过！\n\n状态: ${data.status}\n时间: ${data.timestamp}\n支持的AI平台: ${data.supportedProviders?.join(', ') || '未知'}\n\n可用端点:\n${Object.entries(data.endpoints || {}).map(([key, path]) => `- ${key}: ${path}`).join('\n')}`);
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.error || response.statusText}`);
+                }
+            } catch (error) {
+                statusElement.textContent = '异常';
+                statusIndicator.className = 'status-indicator status-error';
+                showResult('error', `❌ 健康检查失败：\n${error.message}\n\n可能的原因：\n1. Vercel Functions还在部署中\n2. 网络连接问题\n3. API配置错误`);
+            } finally {
+                healthBtn.disabled = false;
+                healthBtn.textContent = '🔍 测试健康检查';
+            }
+        };
+        
+        // 测试CORS配置
+        window.testCORS = async function() {
+            const corsBtn = document.getElementById('corsBtn');
+            corsBtn.disabled = true;
+            corsBtn.textContent = '⏳ 测试中...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health`, {
+                    method: 'OPTIONS'
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                };
+                
+                if (response.ok) {
+                    showResult('success', `✅ CORS配置正确！\n\n允许的源: ${corsHeaders['Access-Control-Allow-Origin']}\n允许的方法: ${corsHeaders['Access-Control-Allow-Methods']}\n允许的头部: ${corsHeaders['Access-Control-Allow-Headers']}`);
+                } else {
+                    throw new Error(`CORS预检失败: ${response.status}`);
+                }
+            } catch (error) {
+                showResult('error', `❌ CORS测试失败：\n${error.message}`);
+            } finally {
+                corsBtn.disabled = false;
+                corsBtn.textContent = '🌐 测试CORS配置';
+            }
+        };
+        
+        // AI测试表单提交
+        document.getElementById('aiTestForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const aiTestBtn = document.getElementById('aiTestBtn');
+            const provider = document.getElementById('provider').value;
+            const apiKey = document.getElementById('apiKey').value;
+            const testContent = document.getElementById('testContent').value;
+            
+            aiTestBtn.disabled = true;
+            aiTestBtn.textContent = '⏳ 分析中...';
+            showResult('loading', '正在调用AI API，请稍候...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/ai-proxy`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        provider: provider,
+                        apiKey: apiKey,
+                        messages: [
+                            {
+                                role: 'system',
+                                content: '你是一个专业的文档分析助手，请对用户提供的文本进行简要分析和总结。'
+                            },
+                            {
+                                role: 'user',
+                                content: `请分析以下文本内容：\n\n${testContent}`
+                            }
+                        ]
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.choices && data.choices[0]) {
+                    showResult('success', `✅ AI分析成功！\n\n使用平台: ${provider}\n\nAI分析结果：\n${data.choices[0].message.content}`);
+                } else {
+                    throw new Error(data.error || '未知错误');
+                }
+                
+            } catch (error) {
+                showResult('error', `❌ AI分析失败：\n${error.message}\n\n请检查：\n1. API密钥是否正确\n2. 网络连接是否正常\n3. AI平台服务是否可用`);
+            } finally {
+                aiTestBtn.disabled = false;
+                aiTestBtn.textContent = '🚀 测试AI分析';
+            }
+        });
+        
+        // 显示结果
+        function showResult(type, message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+        }
+    </script>
+</body>
+</html>

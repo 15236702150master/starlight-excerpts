@@ -4,12 +4,10 @@ import './APIKeyConfig.css'
 
 const APIKeyConfig = ({ isOpen, onClose, onSave }) => {
   const [apiKeys, setApiKeys] = useState({
-    doubao: '',
     deepseek: '',
     qianwen: ''
   })
   const [showKeys, setShowKeys] = useState({
-    doubao: false,
     deepseek: false,
     qianwen: false
   })
@@ -17,21 +15,15 @@ const APIKeyConfig = ({ isOpen, onClose, onSave }) => {
 
   // 平台信息配置
   const platforms = {
-    doubao: {
-      name: '豆包大模型',
-      description: '字节跳动出品，中文理解能力强',
-      getUrl: 'https://console.volcengine.com/ark',
-      placeholder: '请输入您的豆包API密钥'
-    },
     deepseek: {
       name: 'DeepSeek',
-      description: '推理和代码能力优秀',
+      description: '推理和代码能力优秀，通过Vercel Functions代理调用',
       getUrl: 'https://platform.deepseek.com/',
       placeholder: '请输入您的DeepSeek API密钥'
     },
     qianwen: {
       name: '通义千问',
-      description: '阿里云出品，中文处理专业',
+      description: '阿里云出品，中文处理专业，通过Vercel Functions代理调用',
       getUrl: 'https://dashscope.console.aliyun.com/',
       placeholder: '请输入您的通义千问API密钥'
     }
@@ -113,8 +105,8 @@ const APIKeyConfig = ({ isOpen, onClose, onSave }) => {
           <div className="api-key-config-notice">
             <AlertCircle className="notice-icon" />
             <div className="notice-text">
-              <p><strong>隐私保护说明</strong></p>
-              <p>您的API密钥仅存储在本地浏览器中，不会上传到任何服务器。请妥善保管您的API密钥。</p>
+              <p><strong>Vercel Functions代理说明</strong></p>
+              <p>本应用使用Vercel Functions代理AI API调用，解决GitHub Pages的CORS跨域问题。您的API密钥仅存储在本地浏览器中，通过安全的HTTPS连接传输到Vercel Functions，不会被存储在服务器上。</p>
             </div>
           </div>
 
@@ -173,7 +165,8 @@ const APIKeyConfig = ({ isOpen, onClose, onSave }) => {
               <ul>
                 <li>至少配置一个平台的API密钥即可使用AI总结功能</li>
                 <li>建议配置多个平台以获得更好的体验</li>
-                <li>API密钥仅在您的浏览器本地存储，安全可靠</li>
+                <li>API密钥仅在您的浏览器本地存储，通过Vercel Functions安全代理</li>
+                <li>如果遇到API调用问题，请检查Vercel Functions部署状态</li>
               </ul>
             </div>
 

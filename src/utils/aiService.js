@@ -1,32 +1,23 @@
-// 前端AI服务 - 直接调用AI平台API
-// 适用于GitHub Pages等静态托管环境
+// 前端AI服务 - 通过Vercel Functions代理调用AI平台API
+// 解决GitHub Pages部署时的CORS跨域问题
 
-// CORS代理配置（用于解决跨域问题）
-const CORS_PROXIES = [
-  'https://cors-anywhere.herokuapp.com/',
-  'https://api.allorigins.win/raw?url=',
-  'https://corsproxy.io/?'
-]
+import { API_ENDPOINTS } from '../config/vercel.js'
 
 // AI平台配置
 const AI_PLATFORMS = {
-  doubao: {
-    name: '豆包',
-    apiUrl: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
-    models: ['doubao-seed-1-6-250615', 'doubao-1.5-pro-32k-250115'],
-    needsProxy: true // 需要代理解决CORS
-  },
   deepseek: {
     name: 'DeepSeek',
-    apiUrl: 'https://api.deepseek.com/chat/completions',
+    apiUrl: API_ENDPOINTS.AI_PROXY,
     models: ['deepseek-chat', 'deepseek-coder'],
-    needsProxy: true // 需要代理解决CORS
+    provider: 'deepseek',
+    needsProxy: false // 通过Vercel Functions，不需要额外代理
   },
   qianwen: {
     name: '通义千问',
-    apiUrl: 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation',
+    apiUrl: API_ENDPOINTS.AI_PROXY,
     models: ['qwen-turbo', 'qwen-plus', 'qwen-max'],
-    needsProxy: true // 需要代理解决CORS
+    provider: 'qianwen',
+    needsProxy: false // 通过Vercel Functions，不需要额外代理
   }
 }
 
@@ -45,14 +36,11 @@ export const generateAISummary = async (content, title, platform, model, apiKey)
     let response
 
     switch (platform) {
-      case 'doubao':
-        response = await callDoubaoAPI(content, title, model, apiKey, platformConfig)
-        break
       case 'deepseek':
-        response = await callDeepSeekAPI(content, title, model, apiKey, platformConfig)
+        response = await callVercelAPI(content, title, model, apiKey, platformConfig)
         break
       case 'qianwen':
-        response = await callQianwenAPI(content, title, model, apiKey, platformConfig)
+        response = await callVercelAPI(content, title, model, apiKey, platformConfig)
         break
       default:
         throw new Error('不支持的AI平台')
@@ -77,170 +65,59 @@ export const generateAISummary = async (content, title, platform, model, apiKey)
   }
 }
 
-// 通用的API调用函数，处理CORS问题
-const callAIAPI = async (url, headers, body, needsProxy = true) => {
-  let finalUrl = url
-  let finalHeaders = { ...headers }
+// 通过Vercel Functions调用AI API
+const callVercelAPI = async (content, title, model, apiKey, platformConfig) => {
+  const prompt = createSummaryPrompt(content, title)
 
-  // 如果需要代理来解决CORS问题
-  if (needsProxy) {
-    // 尝试直接调用，如果失败则使用代理
-    try {
-      const directResponse = await fetch(url, {
-        method: 'POST',
-        headers: finalHeaders,
-        body: JSON.stringify(body)
-      })
-
-      if (directResponse.ok) {
-        return await directResponse.json()
-      }
-    } catch (error) {
-      console.log('直接调用失败，尝试使用代理:', error.message)
+  const messages = [
+    {
+      role: 'system',
+      content: '你是一个专业的文档分析助手，请对用户提供的文档进行详细分析和总结。'
+    },
+    {
+      role: 'user',
+      content: prompt
     }
+  ]
 
-    // 使用CORS代理
-    for (const proxy of CORS_PROXIES) {
-      try {
-        finalUrl = proxy + encodeURIComponent(url)
+  const requestBody = {
+    provider: platformConfig.provider,
+    messages: messages,
+    apiKey: apiKey,
+    model: model
+  }
 
-        // 某些代理需要特殊处理
-        if (proxy.includes('allorigins')) {
-          finalUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
-        }
-
-        const response = await fetch(finalUrl, {
-          method: 'POST',
-          headers: finalHeaders,
-          body: JSON.stringify(body)
-        })
-
-        if (response.ok) {
-          return await response.json()
-        }
-      } catch (error) {
-        console.log(`代理 ${proxy} 调用失败:`, error.message)
-        continue
-      }
-    }
-
-    throw new Error('所有代理都调用失败，请检查网络连接或API密钥')
-  } else {
-    // 直接调用
-    const response = await fetch(url, {
+  try {
+    const response = await fetch(platformConfig.apiUrl, {
       method: 'POST',
-      headers: finalHeaders,
-      body: JSON.stringify(body)
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
     })
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(`API调用失败: ${response.status} ${errorData.error?.message || response.statusText}`)
+      throw new Error(`Vercel API调用失败: ${response.status} ${errorData.error || response.statusText}`)
     }
 
-    return await response.json()
-  }
-}
+    const data = await response.json()
 
-// 豆包API调用
-const callDoubaoAPI = async (content, title, model, apiKey, platformConfig) => {
-  const prompt = createSummaryPrompt(content, title)
-
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`
-  }
-
-  const body = {
-    model: model,
-    messages: [
-      {
-        role: 'user',
-        content: prompt
-      }
-    ],
-    temperature: 0.7,
-    max_tokens: 2000
-  }
-
-  const data = await callAIAPI(platformConfig.apiUrl, headers, body, platformConfig.needsProxy)
-
-  if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-    throw new Error('豆包API返回格式错误')
-  }
-
-  return {
-    summary: data.choices[0].message.content.trim()
-  }
-}
-
-// DeepSeek API调用
-const callDeepSeekAPI = async (content, title, model, apiKey, platformConfig) => {
-  const prompt = createSummaryPrompt(content, title)
-
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`
-  }
-
-  const body = {
-    model: model,
-    messages: [
-      {
-        role: 'user',
-        content: prompt
-      }
-    ],
-    temperature: 0.7,
-    max_tokens: 2000
-  }
-
-  const data = await callAIAPI(platformConfig.apiUrl, headers, body, platformConfig.needsProxy)
-
-  if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-    throw new Error('DeepSeek API返回格式错误')
-  }
-
-  return {
-    summary: data.choices[0].message.content.trim()
-  }
-}
-
-// 通义千问API调用
-const callQianwenAPI = async (content, title, model, apiKey, platformConfig) => {
-  const prompt = createSummaryPrompt(content, title)
-
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`
-  }
-
-  const body = {
-    model: model,
-    input: {
-      messages: [
-        {
-          role: 'user',
-          content: prompt
-        }
-      ]
-    },
-    parameters: {
-      temperature: 0.7,
-      max_tokens: 2000
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error('AI API返回格式错误')
     }
-  }
 
-  const data = await callAIAPI(platformConfig.apiUrl, headers, body, platformConfig.needsProxy)
-
-  if (!data.output || !data.output.choices || !data.output.choices[0]) {
-    throw new Error('通义千问API返回格式错误')
-  }
-
-  return {
-    summary: data.output.choices[0].message.content.trim()
+    return {
+      summary: data.choices[0].message.content.trim()
+    }
+  } catch (error) {
+    console.error('Vercel API调用失败:', error)
+    throw error
   }
 }
+
+// 注意：原来的单独API调用函数已被统一的callVercelAPI函数替代
+// 所有AI平台现在都通过Vercel Functions代理调用
 
 // 创建总结提示词
 const createSummaryPrompt = (content, title) => {
@@ -284,8 +161,6 @@ export const validateApiKey = (platform, apiKey) => {
   }
 
   switch (platform) {
-    case 'doubao':
-      return apiKey.length > 10 // 简单长度检查
     case 'deepseek':
       return apiKey.startsWith('sk-') && apiKey.length > 20
     case 'qianwen':
@@ -361,20 +236,6 @@ export const clearAPIKeys = () => {
 // 获取API密钥申请指南
 export const getAPIKeyGuide = (platform) => {
   const guides = {
-    doubao: {
-      name: '豆包（字节跳动）',
-      url: 'https://console.volcengine.com/ark',
-      steps: [
-        '1. 访问火山引擎控制台',
-        '2. 注册/登录账号',
-        '3. 进入"机器学习平台PAI"',
-        '4. 选择"模型推理"',
-        '5. 创建API密钥',
-        '6. 复制密钥到应用中'
-      ],
-      features: ['中文理解能力强', '新用户有免费额度', '按token计费'],
-      cost: '相对便宜，新用户通常有免费试用'
-    },
     deepseek: {
       name: 'DeepSeek',
       url: 'https://platform.deepseek.com/',
