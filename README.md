@@ -152,6 +152,8 @@ npm run preview
 3. 选择 "GitHub Actions" 作为构建源
 4. 推送代码到 `master` 分支即可自动部署
 
+> **注意**: 项目使用HashRouter来确保在GitHub Pages上的路由正常工作，URL会包含 `#` 符号（如 `/#/library`）。
+
 ### 本地部署
 ```bash
 # 克隆仓库
