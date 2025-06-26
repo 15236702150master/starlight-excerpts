@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 import { DataProvider } from './contexts/DataContext'
 import LandingPage from './components/LandingPage'
 import LibraryView from './components/LibraryView'
@@ -12,7 +12,7 @@ import './App.css'
 function App() {
   return (
     <DataProvider>
-      <Router basename="/starlight-excerpts">
+      <Router>
         <div className="app">
           <Routes>
             <Route path="/" element={<LandingPage />} />
