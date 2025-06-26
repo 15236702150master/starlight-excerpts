@@ -550,3 +550,139 @@
   color: #6b7280;
   cursor: not-allowed;
 }
+
+/* 新增样式 - API密钥管理器覆盖层 */
+.api-key-manager-overlay {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.close-manager-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.close-manager-btn:hover {
+  background: #c0392b;
+}
+
+/* 配置提示 */
+.ai-config-prompt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.ai-config-prompt svg {
+  color: #fbbf24;
+  flex-shrink: 0;
+}
+
+.ai-config-prompt p {
+  margin: 0 0 8px 0;
+  color: #fbbf24;
+}
+
+.config-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #f39c12;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.config-btn:hover {
+  background: #e67e22;
+}
+
+/* 警告徽章 */
+.ai-summary-panel-badge.warning {
+  background: #f39c12;
+  color: white;
+}
+
+/* 刷新按钮 */
+.ai-summary-refresh-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #9ca3af;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-summary-refresh-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.ai-summary-refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 旋转动画 */
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+/* 总结内容样式 */
+.ai-summary-content {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ai-summary-text {
+  padding: 24px;
+  color: #f1f5f9;
+  line-height: 1.8;
+  font-size: 15px;
+  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+
+.ai-summary-text p {
+  margin: 0 0 16px 0;
+  color: #e2e8f0;
+}
+
+.ai-summary-text p:last-child {
+  margin-bottom: 0;
+}
+
+.ai-summary-meta {
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.8rem;
+  color: #9ca3af;
+  text-align: center;
+}
