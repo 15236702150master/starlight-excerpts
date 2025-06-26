@@ -31,6 +31,12 @@ const validateData = (data) => {
     }
 
     const actualType = Array.isArray(data[key]) ? 'array' : typeof data[key]
+
+    // Special handling for lastDailyLightDate - allow both string and null
+    if (key === 'lastDailyLightDate' && (actualType === 'string' || data[key] === null)) {
+      continue
+    }
+
     if (actualType !== expectedType) {
       console.warn(`Invalid type for ${key}: expected ${expectedType}, got ${actualType}`)
       return false
@@ -175,6 +181,20 @@ const migrateData = (data, version) => {
   // Add aiSummaries field for any version that doesn't have it
   if (!migratedData.aiSummaries) {
     migratedData.aiSummaries = {}
+  }
+
+  // Fix lastDailyLightDate type if it's not a string
+  if (migratedData.lastDailyLightDate && typeof migratedData.lastDailyLightDate !== 'string') {
+    if (migratedData.lastDailyLightDate instanceof Date) {
+      migratedData.lastDailyLightDate = migratedData.lastDailyLightDate.toISOString()
+    } else {
+      migratedData.lastDailyLightDate = new Date().toISOString()
+    }
+  }
+
+  // Ensure lastDailyLightDate exists
+  if (!migratedData.lastDailyLightDate) {
+    migratedData.lastDailyLightDate = null
   }
 
   migratedData.version = CURRENT_VERSION

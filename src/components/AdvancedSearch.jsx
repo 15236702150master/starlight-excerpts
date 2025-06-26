@@ -363,6 +363,7 @@ const AdvancedSearch = ({ onResults, onClose }) => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="search-input"
+              id="advanced-search-input"
               autoFocus
             />
             <button

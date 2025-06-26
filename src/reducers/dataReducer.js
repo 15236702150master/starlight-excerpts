@@ -17,8 +17,6 @@ export const dataReducer = (state, action) => {
         ...initialState,
         ...action.payload
       }
-    case 'LOAD_DATA':
-      return { ...state, ...action.payload }
 
     case 'ADD_ARTICLE':
       const articleId = action.payload.id || generateId()
@@ -128,7 +126,7 @@ export const dataReducer = (state, action) => {
       return {
         ...state,
         dailyLight: action.payload,
-        lastDailyLightDate: new Date().toDateString(),
+        lastDailyLightDate: new Date().toISOString(),
       }
 
     default:

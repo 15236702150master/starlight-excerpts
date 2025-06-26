@@ -468,7 +468,7 @@ async function callDoubaoAPI(config, model, prompt) {
       'Authorization': `Bearer ${config.key}`
     },
     body: JSON.stringify({
-      model: model || 'doubao-seed-1.6-250615',
+      model: model || 'doubao-seed-1-6-250615',
       messages: [
         {
           role: 'user',

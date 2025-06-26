@@ -168,6 +168,7 @@ const VirtualizedLibrary = () => {
               placeholder="搜索文章..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              id="library-search-input"
             />
           </div>
 

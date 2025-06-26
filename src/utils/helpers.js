@@ -39,7 +39,13 @@ export const getRandomStar = (stars) => {
 // Check if it's a new day for daily light
 export const isNewDay = (lastDate) => {
   if (!lastDate) return true
-  return new Date().toDateString() !== lastDate
+
+  // Handle both ISO string and date string formats
+  const lastDateObj = new Date(lastDate)
+  const today = new Date()
+
+  // Compare dates (year, month, day)
+  return lastDateObj.toDateString() !== today.toDateString()
 }
 
 // Extract text content from HTML
