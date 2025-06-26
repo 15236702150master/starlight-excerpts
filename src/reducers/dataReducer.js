@@ -8,6 +8,8 @@ export const initialState = {
   memoryCapsules: {},
   dailyLight: null,
   lastDailyLightDate: null,
+  aiSummaries: {},
+  version: '1.0.0'
 }
 
 export const dataReducer = (state, action) => {

@@ -23,11 +23,12 @@ dist-ssr
 *.sln
 *.sw?
 
-# Local storage and test data
-localStorage.json
+# Local storage and test data (keep localStorage.json for data structure reference)
 test-documents/
-*.md
-!README.md
+# Only ignore specific markdown files, not all
+test-*.md
+*_TEST.md
+*_TEMP.md
 
 # Backend node_modules
 backend/node_modules/

@@ -86,13 +86,32 @@ const formatBytes = (bytes) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
+// Create default data structure
+export const createDefaultData = () => {
+  return {
+    articles: {},
+    stars: {},
+    tags: [],
+    selectedTags: [],
+    memoryCapsules: {},
+    dailyLight: null,
+    lastDailyLightDate: null,
+    aiSummaries: {},
+    version: CURRENT_VERSION,
+    lastSaved: new Date().toISOString()
+  }
+}
+
 // Load data from localStorage with validation and migration
 export const loadData = () => {
   try {
     const data = localStorage.getItem(STORAGE_KEY)
     const version = localStorage.getItem(VERSION_KEY)
 
-    if (!data) return null
+    if (!data) {
+      console.log('No existing data found, creating default data structure')
+      return createDefaultData()
+    }
 
     const parsedData = JSON.parse(data)
 
@@ -102,14 +121,26 @@ export const loadData = () => {
     // Validate data structure
     if (!validateData(migratedData)) {
       console.error('Data validation failed, attempting to restore from backup')
-      return loadBackup()
+      const backupData = loadBackup()
+      if (backupData) {
+        return backupData
+      } else {
+        console.log('No valid backup found, creating default data structure')
+        return createDefaultData()
+      }
     }
 
     return migratedData
   } catch (error) {
     console.error('Error loading data from localStorage:', error)
     console.log('Attempting to restore from backup...')
-    return loadBackup()
+    const backupData = loadBackup()
+    if (backupData) {
+      return backupData
+    } else {
+      console.log('No valid backup found, creating default data structure')
+      return createDefaultData()
+    }
   }
 }
 
