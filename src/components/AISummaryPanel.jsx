@@ -161,54 +161,36 @@ const AISummaryPanel = ({ article, onSummaryGenerated }) => {
     }
   }
 
-  // 优化总结格式，确保清晰的层次结构和舒适的阅读体验
+  // 优化总结格式，确保清晰易读的展示效果
   const optimizeSummaryFormat = (rawSummary) => {
-    let formatted = rawSummary
+    let formatted = rawSummary.trim()
 
-    // 确保有主标题
-    if (!formatted.startsWith('#')) {
-      formatted = `# 📄 文档总结\n\n${formatted}`
-    }
-
-    // 优化总结结构，使用清晰的标识符
+    // 移除可能的markdown符号，因为我们要求AI不使用这些符号
     formatted = formatted
-      // 标准化核心理念标识
-      .replace(/核心理念[：:]/g, '**核心理念：**')
-      .replace(/主要观点[：:]/g, '**主要观点：**')
-      .replace(/关键结论[：:]/g, '**关键结论：**')
-      .replace(/核心内容[：:]/g, '**核心内容：**')
-      .replace(/重要要点[：:]/g, '**重要要点：**')
-      .replace(/主要论点[：:]/g, '**主要论点：**')
+      .replace(/^#+\s*/gm, '') // 移除标题符号
+      .replace(/\*\*(.*?)\*\*/g, '$1') // 移除粗体符号
+      .replace(/\*(.*?)\*/g, '$1') // 移除斜体符号
+      .replace(/`(.*?)`/g, '$1') // 移除代码符号
 
-      // 优化段落结构
-      // 确保标题前后有空行
-      .replace(/([^\n])\n(#{1,6}\s)/g, '$1\n\n$2')
-      .replace(/(#{1,6}[^\n]+)\n([^#\n])/g, '$1\n\n$2')
-
-      // 确保重要标识前后有适当空行
-      .replace(/([^\n])\n(\*\*[^*]+：\*\*)/g, '$1\n\n$2')
-      .replace(/(\*\*[^*]+：\*\*[^\n]*)\n([^\n*])/g, '$1\n\n$2')
-
-      // 优化列表格式
-      .replace(/([^\n])\n([*\-+]\s)/g, '$1\n\n$2')
-      .replace(/([*\-+][^\n]+)\n([^*\-+\n])/g, '$1\n\n$2')
-
-      // 优化数字列表格式
-      .replace(/([^\n])\n(\d+\.\s)/g, '$1\n\n$2')
-      .replace(/(\d+\.[^\n]+)\n([^\d\n])/g, '$1\n\n$2')
-
-      // 清理多余空行，但保持适当的段落间距
-      .replace(/\n{4,}/g, '\n\n\n')
-      .replace(/\n{3}/g, '\n\n')
+    // 确保段落之间有适当的空行
+    formatted = formatted
+      .replace(/\n{3,}/g, '\n\n') // 清理多余空行
+      .replace(/([。！？])\n([^\n])/g, '$1\n\n$2') // 在句号后确保有空行
       .trim()
 
-    // 确保总结有良好的结构
-    if (!formatted.includes('**核心理念：**') && !formatted.includes('**主要观点：**')) {
-      // 如果AI没有使用标准格式，尝试自动添加结构
-      const lines = formatted.split('\n').filter(line => line.trim())
-      if (lines.length > 3) {
-        // 简单的结构化处理
-        formatted = formatted.replace(/^(# [^\n]+\n\n)/, '$1**核心内容：**\n\n')
+    // 如果总结很短，直接返回
+    if (formatted.length < 100) {
+      return formatted
+    }
+
+    // 尝试识别第一句话作为核心观点，并给它特殊格式
+    const sentences = formatted.split(/[。！？]/)
+    if (sentences.length > 1 && sentences[0].length > 10 && sentences[0].length < 100) {
+      const firstSentence = sentences[0].trim() + '。'
+      const restContent = sentences.slice(1).join('。').replace(/^。+/, '').trim()
+
+      if (restContent) {
+        formatted = `**${firstSentence}**\n\n${restContent}`
       }
     }
 

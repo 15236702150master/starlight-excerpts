@@ -232,6 +232,121 @@ npm run build
 - **Web Audio API**: 原生音效生成和播放
 - **MediaRecorder API**: 语音录制功能
 
+## 💻 本地开发
+
+### 环境要求
+- Node.js >= 16.0.0
+- npm >= 7.0.0
+
+### 🚀 一键启动（推荐）
+
+```bash
+# 1. 克隆项目
+git clone https://github.com/15236702150master/starlight-excerpts.git
+cd starlight-excerpts
+
+# 2. 运行设置脚本（自动安装依赖和配置环境）
+./setup.sh
+
+# 3. 配置API密钥（编辑 backend/.env 文件）
+# 至少配置一个AI平台的API密钥
+
+# 4. 启动所有服务
+./start-services.sh
+```
+
+### 手动安装（可选）
+
+```bash
+# 1. 安装前端依赖
+npm install
+
+# 2. 安装后端依赖
+cd backend
+npm install
+cd ..
+
+# 3. 配置环境变量
+cp backend/.env.example backend/.env
+# 编辑 backend/.env 文件，配置API密钥
+
+# 4. 启动后端服务
+cd backend
+npm run dev &
+
+# 5. 启动前端服务
+npm run dev
+```
+
+### 服务管理
+
+```bash
+# 启动所有服务
+./start-services.sh
+
+# 停止所有服务
+./stop-services.sh
+
+# 重新设置项目
+./setup.sh
+```
+
+### 🔧 配置说明
+
+#### AI平台API密钥配置
+
+编辑 `backend/.env` 文件，配置以下API密钥：
+
+```env
+# 豆包大模型 (推荐)
+DOUBAO_API_KEY=your_doubao_api_key_here
+
+# DeepSeek
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
+
+# 通义千问
+QIANWEN_API_KEY=your_qianwen_api_key_here
+```
+
+**API密钥获取地址：**
+- 豆包: https://console.volcengine.com/ark
+- DeepSeek: https://platform.deepseek.com/
+- 通义千问: https://dashscope.console.aliyun.com/
+
+#### 服务端口
+
+- 前端应用: http://localhost:5173
+- 后端API: http://localhost:3001
+
+### 故障排除
+
+#### 常见问题
+
+1. **服务启动失败**
+   - 检查Node.js版本是否 >= 16.0.0
+   - 确保端口5173和3001未被占用
+   - 查看日志文件：`logs/frontend.log` 和 `logs/backend.log`
+
+2. **AI总结功能不工作**
+   - 确保已配置API密钥
+   - 检查网络连接
+   - 查看后端日志确认API调用状态
+
+3. **文档上传失败**
+   - 检查文件格式是否支持
+   - 确保文件大小不超过限制
+   - 清除浏览器缓存重试
+
+#### 日志查看
+
+```bash
+# 查看前端日志
+tail -f logs/frontend.log
+
+# 查看后端日志
+tail -f logs/backend.log
+```
+
 ## 🤝 贡献指南
 
 欢迎所有形式的贡献！无论是bug报告、功能建议还是代码提交。
