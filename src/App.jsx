@@ -12,7 +12,7 @@ import './App.css'
 function App() {
   return (
     <DataProvider>
-      <Router>
+      <Router basename="/starlight-excerpts">
         <div className="app">
           <Routes>
             <Route path="/" element={<LandingPage />} />
