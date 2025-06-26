@@ -224,6 +224,36 @@
   font-size: 0.9rem;
 }
 
+.api-key-required {
+  text-align: center;
+}
+
+.api-key-required p {
+  margin-bottom: 16px;
+  color: #fbbf24;
+}
+
+.config-api-key-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #4ade80;
+  color: #000000;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0 auto;
+}
+
+.config-api-key-btn:hover {
+  background: #22c55e;
+  transform: translateY(-1px);
+}
+
 /* 结果显示 */
 .ai-summary-result {
   background: rgba(255, 255, 255, 0.02);

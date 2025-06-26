@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Brain, Loader2, RefreshCw, Copy, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Settings } from 'lucide-react'
+import { Brain, Loader2, RefreshCw, Copy, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Settings, Key } from 'lucide-react'
 import { marked } from 'marked'
 import { saveAISummary, getAISummary } from '../utils/storage'
+import APIKeyConfig from './APIKeyConfig'
 import './AISummaryPanel.css'
 
 const AISummaryPanel = ({ article, onSummaryGenerated }) => {
@@ -15,6 +16,8 @@ const AISummaryPanel = ({ article, onSummaryGenerated }) => {
   const [availablePlatforms, setAvailablePlatforms] = useState([])
   const [selectedPlatform, setSelectedPlatform] = useState('deepseek')
   const [selectedModel, setSelectedModel] = useState('')
+  const [showAPIKeyConfig, setShowAPIKeyConfig] = useState(false)
+  const [apiKeys, setApiKeys] = useState({})
   const summaryRef = useRef(null)
 
   // 配置marked选项
@@ -27,10 +30,24 @@ const AISummaryPanel = ({ article, onSummaryGenerated }) => {
     })
   }, [])
 
-  // 获取可用的AI平台
+  // 获取可用的AI平台和加载API密钥
   useEffect(() => {
     fetchAvailablePlatforms()
+    loadAPIKeys()
   }, [])
+
+  // 加载保存的API密钥
+  const loadAPIKeys = () => {
+    try {
+      const savedKeys = localStorage.getItem('ai_api_keys')
+      if (savedKeys) {
+        const parsed = JSON.parse(savedKeys)
+        setApiKeys(parsed)
+      }
+    } catch (error) {
+      console.error('加载API密钥失败:', error)
+    }
+  }
 
   const fetchAvailablePlatforms = async () => {
     try {
@@ -75,6 +92,13 @@ const AISummaryPanel = ({ article, onSummaryGenerated }) => {
       return
     }
 
+    // 检查是否有API密钥
+    const hasValidKeys = Object.values(apiKeys).some(key => key && key.trim() !== '')
+    if (!hasValidKeys) {
+      setError('请先配置AI平台的API密钥')
+      return
+    }
+
     setIsLoading(true)
     setError(null)
     setSummary('')
@@ -93,7 +117,8 @@ const AISummaryPanel = ({ article, onSummaryGenerated }) => {
           content: article.content,
           title: article.title,
           platform: platform,
-          model: model
+          model: model,
+          apiKeys: apiKeys
         })
       })
 
@@ -222,6 +247,12 @@ const AISummaryPanel = ({ article, onSummaryGenerated }) => {
     generateSummary()
   }
 
+  // 处理API密钥配置
+  const handleAPIKeySave = (newKeys) => {
+    setApiKeys(newKeys)
+    setShowAPIKeyConfig(false)
+  }
+
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed)
   }
@@ -239,6 +270,16 @@ const AISummaryPanel = ({ article, onSummaryGenerated }) => {
           )}
         </div>
         <div className="ai-summary-panel-controls">
+          <button
+            className="ai-summary-settings-btn"
+            onClick={(e) => {
+              e.stopPropagation()
+              setShowAPIKeyConfig(true)
+            }}
+            title="配置API密钥"
+          >
+            <Key size={16} />
+          </button>
           <button
             className="ai-summary-settings-btn"
             onClick={(e) => {
@@ -393,7 +434,20 @@ const AISummaryPanel = ({ article, onSummaryGenerated }) => {
           {!summary && !isLoading && !error && (
             <div className="ai-summary-placeholder">
               <Brain className="ai-summary-placeholder-icon" />
-              <p>AI总结将在文档加载完成后自动生成</p>
+              {Object.values(apiKeys).some(key => key && key.trim() !== '') ? (
+                <p>AI总结将在文档加载完成后自动生成</p>
+              ) : (
+                <div className="api-key-required">
+                  <p>需要配置AI平台API密钥才能使用总结功能</p>
+                  <button
+                    className="config-api-key-btn"
+                    onClick={() => setShowAPIKeyConfig(true)}
+                  >
+                    <Key size={16} />
+                    配置API密钥
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -402,9 +456,16 @@ const AISummaryPanel = ({ article, onSummaryGenerated }) => {
       <div className="ai-summary-panel-footer">
         <span className="ai-summary-powered">
           <Brain size={12} />
-          由豆包大模型提供支持
+          由AI大模型提供支持
         </span>
       </div>
+
+      {/* API密钥配置组件 */}
+      <APIKeyConfig
+        isOpen={showAPIKeyConfig}
+        onClose={() => setShowAPIKeyConfig(false)}
+        onSave={handleAPIKeySave}
+      />
     </div>
   )
 }

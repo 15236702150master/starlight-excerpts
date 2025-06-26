@@ -18,19 +18,19 @@ const AI_PLATFORMS = {
   doubao: {
     name: '豆包大模型',
     url: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
-    key: process.env.DOUBAO_API_KEY || '9c8d8673-02b2-40aa-9ae3-f6c471787473',
+    key: process.env.DOUBAO_API_KEY,
     models: ['doubao-seed-1-6-250615', 'doubao-seed-1-6-thinking-250615', 'doubao-seed-1-6-flash-250615']
   },
   deepseek: {
     name: 'DeepSeek',
     url: 'https://api.deepseek.com/v1/chat/completions',
-    key: process.env.DEEPSEEK_API_KEY || 'sk-c20630215fcf44b2a75d836cfd7711fb',
+    key: process.env.DEEPSEEK_API_KEY,
     models: ['deepseek-chat', 'deepseek-coder']
   },
   qianwen: {
     name: '通义千问',
     url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
-    key: process.env.QIANWEN_API_KEY || 'sk-d73c17bf988c4b3f9171b59dd7480323',
+    key: process.env.QIANWEN_API_KEY,
     models: ['qwen-max', 'qwen-plus', 'qwen-turbo']
   }
 };
@@ -391,15 +391,23 @@ function generateDeepAnalysis(sentences, keywords, structure) {
 }
 
 // 调用外部AI平台
-async function callExternalAI(platform, model, content, title) {
+async function callExternalAI(platform, model, content, title, userApiKeys = {}) {
   const platformConfig = AI_PLATFORMS[platform];
   if (!platformConfig) {
     throw new Error(`不支持的AI平台: ${platform}`);
   }
 
-  if (!platformConfig.key || platformConfig.key === '') {
-    throw new Error(`${platformConfig.name} API密钥未配置`);
+  // 优先使用用户提供的API密钥，否则使用环境变量中的密钥
+  const apiKey = userApiKeys[platform] || platformConfig.key;
+  if (!apiKey || apiKey === '') {
+    throw new Error(`${platformConfig.name} API密钥未配置，请在前端配置您的API密钥`);
   }
+
+  // 创建临时配置对象，使用用户的API密钥
+  const configWithUserKey = {
+    ...platformConfig,
+    key: apiKey
+  };
 
   const prompt = `请为以下文档生成详细、优美的总结分析：
 
@@ -432,13 +440,13 @@ ${content}
 
     switch (platform) {
       case 'doubao':
-        response = await callDoubaoAPI(platformConfig, model, prompt);
+        response = await callDoubaoAPI(configWithUserKey, model, prompt);
         break;
       case 'deepseek':
-        response = await callDeepSeekAPI(platformConfig, model, prompt);
+        response = await callDeepSeekAPI(configWithUserKey, model, prompt);
         break;
       case 'qianwen':
-        response = await callQianwenAPI(platformConfig, model, prompt);
+        response = await callQianwenAPI(configWithUserKey, model, prompt);
         break;
       default:
         throw new Error(`暂不支持平台: ${platform}`);
@@ -555,7 +563,7 @@ async function callQianwenAPI(config, model, prompt) {
 // 文档总结API
 app.post('/api/summarize', async (req, res) => {
   try {
-    const { content, title, platform = 'doubao', model, options = {} } = req.body;
+    const { content, title, platform = 'doubao', model, options = {}, apiKeys = {} } = req.body;
 
     if (!content) {
       return res.status(400).json({ 
@@ -632,7 +640,7 @@ ${content}
     console.log('使用平台:', platform);
 
     // 使用外部AI平台生成总结
-    const result = await callExternalAI(platform, model, content, title);
+    const result = await callExternalAI(platform, model, content, title, apiKeys);
     let summary = result.summary;
     const usedModel = result.model;
     const usage = result.usage;
